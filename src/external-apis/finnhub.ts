@@ -10,11 +10,16 @@ function fetchFinnhub<Response>(path: string) {
   );
 }
 
+export enum FinnhubQueryKeys {
+  StockSymbols = "stockSymbols",
+  Quote = "quote",
+}
+
 // ref: https://finnhub.io/docs/api/stock-symbols
 export async function stockSymbolsQuery() {
-  return fetchFinnhub<Array<StockSymbolsQuery>>(`stock/symbol?exchange=US`);
+  return fetchFinnhub<Array<StockSymbolsQueryItem>>(`stock/symbol?exchange=US`);
 }
-export interface StockSymbolsQuery {
+export interface StockSymbolsQueryItem {
   currency: string; // e.g. USD
   description: string; // e.g. APPLE INC
   displaySymbol: string; // e.g. AAPL
