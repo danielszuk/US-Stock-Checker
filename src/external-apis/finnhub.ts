@@ -13,6 +13,7 @@ function fetchFinnhub<Response>(path: string) {
 export enum FinnhubQueryKeys {
   StockSymbols = "stockSymbols",
   Quote = "quote",
+  CompanyPeers = "companyPeers",
 }
 
 // ref: https://finnhub.io/docs/api/stock-symbols
@@ -28,3 +29,22 @@ export interface StockSymbolsQueryItem {
   symbol: string; // e.g. AAPL
   type: string; // e.g. Common Stock
 }
+
+// ref: https://finnhub.io/docs/api/quote
+export async function quoteQuery(symbol: string) {
+  return fetchFinnhub<QuoteQuery>(`quote?symbol=${symbol}`);
+}
+export interface QuoteQuery {
+  c: number;
+  h: number;
+  l: number;
+  o: number;
+  pc: number;
+  t: number;
+}
+
+// https://finnhub.io/docs/api/company-peers
+export async function companyPeersQuery(symbol: string) {
+  return fetchFinnhub<CompanyPeersQuery>(`stock/peers?symbol=${symbol}`);
+}
+export type CompanyPeersQuery = Array<string>;
