@@ -51,7 +51,7 @@ export function TickerStatistics({
           </span>
           {quoteLoadingError ? (
             <span className="text-error">
-              Unable to load data from finnhub.{" "}
+              Unable to load data from network.{" "}
               <button className="underline" onClick={() => refetchQuote()}>
                 Try again.
               </button>
@@ -95,7 +95,7 @@ export function TickerStatistics({
           ))}
           {peersLoadingerror ? (
             <span className="text-error">
-              Unable to load data from finnhub.{" "}
+              Unable to load data from network.{" "}
               <button className="underline" onClick={() => refetchPeers()}>
                 Try again.
               </button>

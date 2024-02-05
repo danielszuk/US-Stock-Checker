@@ -1,6 +1,9 @@
 import type { Config } from "tailwindcss";
 import colors from "tailwindcss/colors";
 
+export const secondaryColor = colors.green[600];
+export const secondaryColorTransparent = "rgba(22, 163, 74, 0.2)";
+
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,7 +13,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        secondary: colors.green[600],
+        secondary: secondaryColor,
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

@@ -11,9 +11,9 @@ function fetchFinnhub<Response>(path: string) {
 }
 
 export enum FinnhubQueryKeys {
-  StockSymbols = "stockSymbols",
-  Quote = "quote",
-  CompanyPeers = "companyPeers",
+  StockSymbols = "FinnhubQueryStockSymbols",
+  Quote = "FinnhubQueryQuote",
+  CompanyPeers = "FinnhubQueryCompanyPeers",
 }
 
 // ref: https://finnhub.io/docs/api/stock-symbols
