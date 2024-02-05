@@ -1,13 +1,9 @@
-import { POLYGON_API_KEY } from "../env";
-
 function fetchPolygon<Response>(path: string) {
-  return fetch(`https://api.polygon.io/${path}&apiKey=${POLYGON_API_KEY}`).then(
-    async (rawResponse) => {
-      const response = await rawResponse.json();
-      if (response.error) throw new Error(response.error);
-      else return response.results as Response;
-    }
-  );
+  return fetch(`/api/polygon/${path}`).then(async (rawResponse) => {
+    const response = await rawResponse.json();
+    if (response.error) throw new Error(response.error);
+    else return response.results as Response;
+  });
 }
 
 export enum PolygonQueryKeys {

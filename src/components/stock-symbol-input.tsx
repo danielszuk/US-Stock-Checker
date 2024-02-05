@@ -43,21 +43,26 @@ export default function StockSymbolInput({
   // Validate Stock Symbol input
   const [stockSymbolNotFound, setStockSymbolNotFound] = useState(false);
   useEffect(() => {
-    // If the ticker symbol has not been submitted or the stock symbols are still loading, we don't want to do anything
-    if (!stockSymbolSubmitted || isStockSymbolsLoading) return;
+    // If the ticker symbol has not been submitted or the stock symbols are still loading,
+    // or the loading was not successfull, we don't do anything
+    if (
+      !stockSymbolSubmitted ||
+      isStockSymbolsLoading ||
+      stockSymbolsLoadingError ||
+      !stockSymbols
+    )
+      return;
 
-    if (!stockSymbolsLoadingError && stockSymbols) {
-      const ticker = stockSymbols.find(
-        (stock) => stock.symbol === stockSymbolInput
-      );
-      console.info("stockSymbol search finished: ", ticker);
-      setStockSymbolSubmitted(false);
-      if (ticker) {
-        setTicker(ticker);
-        Router.push(`/${ticker.symbol}`);
-      } else {
-        setStockSymbolNotFound(true);
-      }
+    const ticker = stockSymbols.find(
+      (stock) => stock.symbol === stockSymbolInput
+    );
+    console.info("stockSymbol search finished: ", ticker);
+    setStockSymbolSubmitted(false);
+    if (ticker) {
+      setTicker(ticker);
+      Router.push(`/${ticker.symbol}`);
+    } else {
+      setStockSymbolNotFound(true);
     }
   }, [
     stockSymbolSubmitted,
