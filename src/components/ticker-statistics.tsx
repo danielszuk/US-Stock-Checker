@@ -89,7 +89,7 @@ export function TickerStatistics({
           }`}
         >
           {peers?.map((peer) => (
-            <Link key={peer} href={`?${peer}`} className="underline">
+            <Link key={peer} href={`/${peer}`} className="underline">
               {peer}
             </Link>
           ))}

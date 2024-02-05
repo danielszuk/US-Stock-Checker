@@ -6,11 +6,14 @@ import {
   StockSymbolsQueryItem,
   stockSymbolsQuery,
 } from "../external-apis/finnhub";
+import { useParams } from "next/navigation";
+import Router from "next/router";
+import { Params } from "../pages/params";
 
 export default function StockSymbolInput({
-  setStockSymbol,
+  setTicker,
 }: {
-  setStockSymbol: Dispatch<SetStateAction<StockSymbolsQueryItem | undefined>>;
+  setTicker: Dispatch<SetStateAction<StockSymbolsQueryItem | undefined>>;
 }) {
   // Fetch Stock Symbols
   const {
@@ -48,24 +51,42 @@ export default function StockSymbolInput({
         (stock) => stock.symbol === stockSymbolInput
       );
       console.info("stockSymbol search finished: ", ticker);
+      setStockSymbolSubmitted(false);
       if (ticker) {
-        setStockSymbol(ticker);
+        setTicker(ticker);
+        Router.push(`/${ticker.symbol}`);
       } else {
         setStockSymbolNotFound(true);
       }
     }
-    setStockSymbolSubmitted(false);
   }, [
     stockSymbolSubmitted,
     stockSymbols,
     isStockSymbolsLoading,
     stockSymbolsLoadingError,
     stockSymbolInput,
-    setStockSymbol,
+    setTicker,
   ]);
   useEffect(() => {
+    // clear error after user starts typing again
     setStockSymbolNotFound(false);
   }, [stockSymbolInput]);
+
+  // Symbol from URL
+  const params = useParams<Params>();
+  useEffect(() => {
+    if (params?.["stock-symbol"]) {
+      setStockSymbolInput((symbolInput) => {
+        if (symbolInput !== params["stock-symbol"]) {
+          // If symbol input is different from the new symbol in the URL, update the input and submit it
+          setStockSymbolSubmitted(true);
+          return params["stock-symbol"];
+        } else {
+          return symbolInput;
+        }
+      });
+    }
+  }, [params]);
 
   return (
     <div className="w-full">
@@ -80,6 +101,7 @@ export default function StockSymbolInput({
               type="text"
               placeholder="e.g. AAPL, TSLA, GOOG"
               className="input input-bordered w-full focus:input-primary transition"
+              value={stockSymbolInput}
               onInput={(e) => setStockSymbolInput(e.currentTarget.value)}
             />
             {stockSymbolsLoadingError || stockSymbolNotFound ? (
