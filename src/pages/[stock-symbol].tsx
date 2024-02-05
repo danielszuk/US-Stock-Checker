@@ -1,5 +1,5 @@
 import TickerContainer from "../components/ticker-container";
 
-export default function Home() {
+export default function StockSymbol() {
   return <TickerContainer />;
 }
