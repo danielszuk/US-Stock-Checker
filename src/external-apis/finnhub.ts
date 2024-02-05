@@ -1,5 +1,9 @@
+import { FINNHUB_API_KEY } from "../env";
+
 function fetchFinnhub<Response>(path: string) {
-  return fetch(`/api/finnhub/${path}`).then(async (rawResponse) => {
+  return fetch(
+    `https://finnhub.io/api/v1/${path}&token=${FINNHUB_API_KEY}`
+  ).then(async (rawResponse) => {
     const response = await rawResponse.json();
     if (response.error) throw new Error(response.error);
     else return response as Response;

@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { POLYGON_API_KEY } from "../../../env";
+import { POLYGON_API_KEY } from "../../../server-env";
 
 export const config = {
   api: {
