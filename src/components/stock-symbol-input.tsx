@@ -84,7 +84,7 @@ export default function StockSymbolInput({
             />
             {stockSymbolsLoadingError || stockSymbolNotFound ? (
               <div className="label">
-                <span className="label-text text-red-400">
+                <span className="label-text text-error">
                   {/* Stock Symbol not found */}
                   {stockSymbolNotFound
                     ? `"${stockSymbolInput}" Ticker Symbol is not exist.`
@@ -93,7 +93,7 @@ export default function StockSymbolInput({
                   {/* Stock Symbols Fetching error */}
                   {stockSymbolsLoadingError ? (
                     <>
-                      {stockSymbolsLoadingError?.message}{" "}
+                      Unable to load data from finnhub.{" "}
                       <button
                         className="underline"
                         onClick={() => refetchStockSymbols()}

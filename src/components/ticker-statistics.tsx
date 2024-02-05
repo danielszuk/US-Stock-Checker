@@ -6,6 +6,7 @@ import {
   quoteQuery,
 } from "../external-apis/finnhub";
 import { useMemo } from "react";
+import Link from "next/link";
 
 export function TickerStatistics({
   ticker,
@@ -33,7 +34,7 @@ export function TickerStatistics({
     queryKey: [FinnhubQueryKeys.CompanyPeers, ticker.displaySymbol],
     queryFn: () => companyPeersQuery(ticker.displaySymbol),
   });
-  const peers = useMemo(() => peersData?.slice(1, 5), [peersData]);
+  const peers = useMemo(() => peersData?.slice(1, 4), [peersData]);
 
   return (
     <div className="w-full flex flex-col gap-8">
@@ -41,23 +42,86 @@ export function TickerStatistics({
         <div className="flex flex-col gap-1">
           <span className="text-base">{ticker.displaySymbol}</span>
           <span className="text-xl">{ticker.description}</span>
-          <span className="text-xl text-secondary">{quote?.c}</span>
+          <span
+            className={`text-xl text-success ${
+              isQuoteLoading ? "loading loading-spinner" : ""
+            }`}
+          >
+            {quote?.c}
+          </span>
+          {quoteLoadingError ? (
+            <span className="text-error">
+              Unable to load data from finnhub.{" "}
+              <button className="underline" onClick={() => refetchQuote()}>
+                Try again.
+              </button>
+            </span>
+          ) : null}
         </div>
         <div className="grid grid-rows-4 grid-cols-2 gap-x-4">
-          <span className="text-xs">Previous Close:</span>
-          <span className="text-xs text-secondary">{quote?.pc}</span>
-          <span className="text-xs">Todays Open:</span>
-          <span className="text-xs text-secondary">{quote?.o}</span>
-          <span className="text-xs">Todays High:</span>
-          <span className="text-xs text-secondary">{quote?.h}</span>
-          <span className="text-xs">Todays Low:</span>
-          <span className="text-xs text-secondary">{quote?.l}</span>
+          <TickerStatisticField
+            label="Previous Close:"
+            value={quote?.pc}
+            isLoading={isQuoteLoading}
+          />
+          <TickerStatisticField
+            label="Todays Open:"
+            value={quote?.o}
+            isLoading={isQuoteLoading}
+          />
+          <TickerStatisticField
+            label="Todays High:"
+            value={quote?.h}
+            isLoading={isQuoteLoading}
+          />
+          <TickerStatisticField
+            label="Todays Low:"
+            value={quote?.l}
+            isLoading={isQuoteLoading}
+          />
         </div>
       </div>
       <div>
-        <span>Similar Companies</span>
-        <div>{peers?.join(", ")}</div>
+        <div className="text-base mb-1">Similar Companies</div>
+        <div
+          className={`flex gap-4 text-lg text-primary ${
+            isPeersLoading ? "loading loading-spinner" : ""
+          }`}
+        >
+          {peers?.map((peer) => (
+            <Link key={peer} href={`?${peer}`} className="underline">
+              {peer}
+            </Link>
+          ))}
+          {peersLoadingerror ? (
+            <span className="text-error">
+              Unable to load data from finnhub.{" "}
+              <button className="underline" onClick={() => refetchPeers()}>
+                Try again.
+              </button>
+            </span>
+          ) : null}
+        </div>
       </div>
     </div>
+  );
+}
+
+function TickerStatisticField({
+  label,
+  value,
+  isLoading,
+}: {
+  label: string;
+  value?: number;
+  isLoading: boolean;
+}) {
+  return (
+    <>
+      <span className={`text-xs ${isLoading ? "text-slate-400" : ""}`}>
+        {label}
+      </span>
+      <span className="text-xs text-secondary">{value}</span>
+    </>
   );
 }
