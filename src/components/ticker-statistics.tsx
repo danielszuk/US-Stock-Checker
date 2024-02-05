@@ -34,12 +34,13 @@ export function TickerStatistics({
     queryKey: [FinnhubQueryKeys.CompanyPeers, ticker.displaySymbol],
     queryFn: () => companyPeersQuery(ticker.displaySymbol),
   });
-  const peers = useMemo(() => peersData?.slice(1, 4), [peersData]);
+  const peers = useMemo(() => peersData?.slice(1, 4), [peersData]); // only show first 3 peers
 
   return (
     <div className="w-full flex flex-col gap-8">
       <div className="flex flex-col sm:flex-row gap-8 sm:gap-16">
         <div className="flex flex-col gap-1">
+          {/* Main data */}
           <span className="text-base">{ticker.displaySymbol}</span>
           <span className="text-xl">{ticker.description}</span>
           <span
@@ -49,6 +50,7 @@ export function TickerStatistics({
           >
             {quote?.c}
           </span>
+          {/* Network error */}
           {quoteLoadingError ? (
             <span className="text-error">
               Unable to load data from network.{" "}
@@ -58,6 +60,8 @@ export function TickerStatistics({
             </span>
           ) : null}
         </div>
+
+        {/* Price indicators */}
         <div className="grid grid-rows-4 grid-cols-2 gap-x-4">
           <TickerStatisticField
             label="Previous Close:"
@@ -81,6 +85,8 @@ export function TickerStatistics({
           />
         </div>
       </div>
+
+      {/* Similar Companies */}
       <div>
         <div className="text-base mb-1">Similar Companies</div>
         <div
@@ -93,6 +99,7 @@ export function TickerStatistics({
               {peer}
             </Link>
           ))}
+          {/* Network error */}
           {peersLoadingerror ? (
             <span className="text-error">
               Unable to load data from network.{" "}

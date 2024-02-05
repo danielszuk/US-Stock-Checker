@@ -3,7 +3,7 @@ import { useState } from "react";
 import { StockSymbolsQueryItem } from "../external-apis/finnhub";
 import StockSymbolInput from "../components/stock-symbol-input";
 import { TickerStatistics } from "../components/ticker-statistics";
-import HistoricalPriceGraph from "./historical-price-graph";
+import TickerHistoricalPriceGraph from "./ticker-historical-price-graph";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +18,7 @@ export default function TickerContainer() {
           {ticker ? <TickerStatistics ticker={ticker} /> : null}
         </div>
         <div className="md:w-6/12">
-          {ticker ? <HistoricalPriceGraph ticker={ticker} /> : null}
+          {ticker ? <TickerHistoricalPriceGraph ticker={ticker} /> : null}
         </div>
       </div>
     </main>

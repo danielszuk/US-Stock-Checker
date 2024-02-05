@@ -8,6 +8,10 @@ import {
   secondaryColorTransparent,
 } from "../../tailwind.config";
 
+import * as echarts from "echarts";
+// TODO: To optimize bundle size import only necessary modules
+// (https://apache.github.io/echarts-handbook/en/basics/import/)
+
 const graphColor = secondaryColor;
 const graphColorTransparent = secondaryColorTransparent;
 
@@ -17,7 +21,7 @@ const oneYearAgo = today - 1000 * 60 * 60 * 24 * 365;
 const timestampFormatter = (timestamp: number) =>
   new Date(timestamp).toISOString().split("T")[0];
 
-export default function HistoricalPriceGraph({
+export default function TickerHistoricalPriceGraph({
   ticker,
 }: {
   ticker: StockSymbolsQueryItem;
@@ -36,110 +40,110 @@ export default function HistoricalPriceGraph({
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ECharts>();
 
+  // Initialize container size
   const setContainerSize = useCallback(() => {
     if (containerRef.current === null) return;
     containerRef.current.style.height =
       containerRef.current.clientWidth / 1.5 + "px"; // calculate height based on a fix aspect ratio
   }, []);
 
+  // Initialize chart
   useEffect(() => {
-    import("echarts").then((echarts) => {
-      if (containerRef.current === null || prices === undefined) return;
+    if (containerRef.current === null || prices === undefined) return;
 
-      if (!chartRef.current) {
-        // initialize chart
-        setContainerSize(); // calculate height based on a fix aspect ratio
-        chartRef.current = echarts.init(containerRef.current);
-      }
+    if (!chartRef.current) {
+      // initialize chart
+      setContainerSize(); // calculate height based on a fix aspect ratio
+      chartRef.current = echarts.init(containerRef.current);
+    }
 
-      const closingPrices = prices.map((price) => [
-        timestampFormatter(price.t),
-        price.c,
-      ]);
+    const closingPrices = prices.map((price) => [
+      timestampFormatter(price.t),
+      price.c,
+    ]);
 
-      // config chart
-      chartRef.current.setOption({
-        series: [
-          {
-            name: "Closing Price",
-            data: closingPrices, // load data: [timestamp, price]
-            type: "line",
-            smooth: true,
+    // config chart
+    chartRef.current.setOption({
+      series: [
+        {
+          name: "Closing Price",
+          data: closingPrices, // load data: [timestamp, price]
+          type: "line",
+          smooth: true,
+          color: graphColor,
+        },
+      ],
+      yAxis: {
+        type: "value",
+        name: "Daily Closing Prices",
+        nameTextStyle: {
+          align: "left",
+        },
+        axisLabel: {
+          formatter: "{value} $",
+        },
+      },
+      xAxis: {
+        type: "time",
+        axisPointer: {
+          snap: true,
+          lineStyle: {
+            color: graphColor,
+            width: 2,
+          },
+          label: {
+            show: true,
+            formatter: ({ value }: { value: number }) =>
+              timestampFormatter(value),
+            backgroundColor: graphColor,
+          },
+          handle: {
+            show: true,
             color: graphColor,
           },
-        ],
-        yAxis: {
-          type: "value",
-          name: "Daily Closing Prices",
-          nameTextStyle: {
-            align: "left",
-          },
-          axisLabel: {
-            formatter: "{value} $",
-          },
         },
-        xAxis: {
-          type: "time",
-          axisPointer: {
-            snap: true,
-            lineStyle: {
-              color: graphColor,
-              width: 2,
+      },
+      tooltip: {
+        triggerOn: "mousemove",
+        valueFormatter: (value: number) => `${value} $`,
+      },
+      toolbox: {
+        left: "left",
+        itemSize: 20,
+        bottom: 0,
+        feature: {
+          dataZoom: {
+            yAxisIndex: "none",
+            iconStyle: {
+              borderColor: graphColor,
             },
-            label: {
-              show: true,
-              formatter: ({ value }: { value: number }) =>
-                timestampFormatter(value),
-              backgroundColor: graphColor,
-            },
-            handle: {
-              show: true,
-              color: graphColor,
-            },
-          },
-        },
-        tooltip: {
-          triggerOn: "mousemove",
-          valueFormatter: (value: number) => `${value} $`,
-        },
-        toolbox: {
-          left: "left",
-          itemSize: 20,
-          bottom: 0,
-          feature: {
-            dataZoom: {
-              yAxisIndex: "none",
+            emphasis: {
               iconStyle: {
                 borderColor: graphColor,
               },
-              emphasis: {
-                iconStyle: {
-                  borderColor: graphColor,
-                },
-              },
-              brushStyle: {
-                color: graphColorTransparent,
-              },
             },
-            restore: {
+            brushStyle: {
+              color: graphColorTransparent,
+            },
+          },
+          restore: {
+            iconStyle: {
+              borderColor: graphColor,
+            },
+            emphasis: {
               iconStyle: {
                 borderColor: graphColor,
-              },
-              emphasis: {
-                iconStyle: {
-                  borderColor: graphColor,
-                },
               },
             },
           },
         },
-        dataZoom: [
-          {
-            type: "inside",
-            throttle: 50,
-          },
-        ],
-      });
+      },
+      dataZoom: [
+        {
+          type: "inside",
+          throttle: 50,
+        },
+      ],
     });
   }, [prices, setContainerSize]);
 
@@ -161,7 +165,7 @@ export default function HistoricalPriceGraph({
 
   return (
     <div>
-      {/* Error */}
+      {/* Network Error */}
       {pricesLoadingError ? (
         <span className="text-error">
           Unable to load data from network.{" "}

@@ -2,39 +2,40 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+1. First set the environment variables:
+   Copy the `.env.example` file to `.env.local` and fill in the values.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. Install the dependencies: `npm run install`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Run the development server: `npm run dev`
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:3000](http://localhost:3000) with your browser to use the app.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Dependencies
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+This project uses the following frameworks and libraries:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- TypeScript [https://www.typescriptlang.org/]: As a statically typed language.
+- Next.js [https://nextjs.org/]: As a React and CI/CD framework.
+- Tailwind CSS [https://tailwindcss.com/]: As a utility-first CSS framework.
+- DaisyUI [https://daisyui.com/]: As a component library for Tailwind CSS.
+- React-query [https://react-query.tanstack.com/]: As a data-fetching library.
+- Echarts [https://echarts.apache.org/]: As a charting library.
 
-## Learn More
+The app also depends on the followin 2 external APIs (see `.env.example` for the environment variables needed to use them):
 
-To learn more about Next.js, take a look at the following resources:
+- [finnhub.io](https://finnhub.io/): For general stock data.
+- [polygon.io](https://polygon.io/): For historical price data.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architecture
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+The app is structured as follows:
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- `pages`: We have 2 pages in the app, the blank index (`/`) and the stock-symbol page (`/[stock-symbol]`). Both pages display the exact same layout, the only difference, that the stock-symbol page automatically fill the input field with the symbol from the URL and fetches the stock data for the symbol, while the index page has a blank input field.
+  - `_app`: The global providers and their configurations (`react-query`).
+- `components`: We have 3 components in the app:
+  - `ticker-container`: The container that holds the input field and the stock details components.
+  - `stock-symbol-input`: The full-featured input field that can be used to search for stock symbols (also includes the logic to load the symbol from the URL inside the field).
+  - `ticker-statistics`: The component that displays the ticker's statistics (open, close, high, low, etc).
+  - `ticker-historical-price-graph`: The component that displays the ticker's historical price graph.
+- `external-apis`: the fetching url composers for the external APIs.
